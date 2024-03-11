@@ -6,19 +6,17 @@ const AuthCallback = () => {
   let navigate = useNavigate();
   const urlParams = new URLSearchParams(window.location.search);
   const code = urlParams.get('code');
-  console.log("initialized callback")
   if(!code) {
     // TODO better error handling here?
-    navigate('/')
-    return;
+    return navigate('/')
   }
 
   const clientId = import.meta.env.YOODLI_SPOTIFY_CLIENT_ID;
   const redirectUri = import.meta.env.YOODLI_SPOTIFY_REDIRECT_URI;
-  const tokenUrl = new URL("https://accounts.spotify.com/api/token")
+  const tokenUrl = "https://accounts.spotify.com/api/token"
 
-  const getToken = async (code: string) => {
-    let codeVerifier = localStorage.getItem('code_verifier');
+  const getToken = async (code: string, controller?: AbortController) => {
+    const codeVerifier = localStorage.getItem('code_verifier');
 
     const payload = {
       method: 'POST',
@@ -32,32 +30,37 @@ const AuthCallback = () => {
         redirect_uri: redirectUri,
         code_verifier: codeVerifier,
       } as any),
+      signal: controller?.signal || null,
     }
 
-    console.log("payload", payload)
-
-    const body = await fetch(tokenUrl, payload);
+    const body = await fetch(tokenUrl, payload)
     const response = await body.json();
     console.log(response)
     // TODO need error checking here
 
     localStorage.setItem('access_token', response.access_token);
+    localStorage.setItem('refresh_token', response.refresh_token)
   }
 
   useEffect(() => {
-    console.log("before", code)
-    getToken(code).then(() => {
+    let controller: any;
+    // we need this to cancel duplicate API requests made when React is running in strict mode
+    // (only a problem in lower envs)
+    if(!import.meta.env.PROD) {
+      controller = new AbortController();
+    }
+    getToken(code, controller).then(() => {
       console.log("after processing", localStorage)
-      navigate('/search')
+      return navigate('/search');
     }).catch((e) => {
       console.error(e)
     })
+
+    return () => controller.abort()
   }, [code])
 
   return (
-    <>
-      auth callback
-    </>
+    <></>
   )
 }
 
