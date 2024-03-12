@@ -33,7 +33,6 @@ export const CatalogItem = (props: any) => {
       getArtistGenre(item.artists[0].href).then((genres) => setGenres(genres))
     }
     if (item.type === "track") {
-      console.log(item.name, item.artists[0].href)
       setImage(item.album.images.filter((image: any) => image.height === 64)[0]);
       getArtistGenre(item.artists[0].href).then((genres) => setGenres(genres))
     }

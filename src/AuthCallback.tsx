@@ -50,7 +50,6 @@ const AuthCallback = () => {
       controller = new AbortController();
     }
     getToken(code, controller).then(() => {
-      console.log("after processing", localStorage)
       return navigate('/search');
     }).catch((e) => {
       console.error(e)
