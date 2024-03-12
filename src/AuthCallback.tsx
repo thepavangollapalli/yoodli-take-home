@@ -8,7 +8,8 @@ const AuthCallback = () => {
   const code = urlParams.get('code');
   if(!code) {
     // TODO better error handling here?
-    return navigate('/')
+    navigate('/')
+    return <div></div>;
   }
 
   const clientId = import.meta.env.YOODLI_SPOTIFY_CLIENT_ID;
@@ -60,7 +61,7 @@ const AuthCallback = () => {
   }, [code])
 
   return (
-    <></>
+    <div></div>
   )
 }
 

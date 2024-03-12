@@ -2,10 +2,12 @@ import './App.css'
 
 const App = () => {
   return (
-    <>
-      login link goes here
-      <a href="/login">login with spotify</a>
-    </>
+    <div>
+      <header>
+        <h3>Spotify Catalog Search</h3>
+        <a href="/login">Login with Spotify</a>
+      </header>
+    </div>
   )
 }
 

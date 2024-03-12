@@ -2,9 +2,10 @@ import { useEffect } from 'react';
 
 import './App.css'
 
-// TODO: document why this is a component and not run in root
+// This is a separate component mainly due to wanting to keep this auth logic separate from
+// the route definition and home page logic - there is no functional benefit, but it will be easier to maintain
+// as it creates a logical separate for all logic related to this part of the auth flow.
 const AuthStart = () => {
-  // run pkce flow here
   const clientId = import.meta.env.YOODLI_SPOTIFY_CLIENT_ID
 
   const generateRandomString = (length: number) => {
@@ -32,12 +33,11 @@ const AuthStart = () => {
     const hashed = await sha256(codeVerifier)
     const codeChallenge = base64encode(hashed);
 
-    // TODO is this the right scope?
     const scope = 'user-library-read';
     const authUrl = new URL("https://accounts.spotify.com/authorize")
 
     window.localStorage.setItem('code_verifier', codeVerifier);
-    const redirectUri = 'http://localhost:5173/callback';
+    const redirectUri = import.meta.env.YOODLI_SPOTIFY_REDIRECT_URI;
 
     const params =  {
       response_type: 'code',
@@ -47,7 +47,6 @@ const AuthStart = () => {
       code_challenge: codeChallenge,
       redirect_uri: redirectUri,
     }
-    console.log(params)
 
     authUrl.search = new URLSearchParams(params).toString();
     window.location.href = authUrl.toString();
@@ -62,9 +61,7 @@ const AuthStart = () => {
   }, [])
 
   return (
-    <>
-      auth start
-    </>
+    <div></div>
   )
 }
 

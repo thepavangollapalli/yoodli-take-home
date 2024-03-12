@@ -3,40 +3,32 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  width: 100%;
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.search-page {
+  display: grid;
+  grid-template-rows: auto auto 1fr; /* Header, search input, and search results take up available space */
+  height: 100vh; /* Full height of the viewport */
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.header {
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  margin-bottom: 5%;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.catalog-container {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Responsive grid with minimum item width of 200px */
+  grid-gap: 20px; /* Gap between grid items */
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.catalog-item {
+  padding: 10px;
+  border: 1px solid #ccc;
 }
