@@ -6,6 +6,14 @@ import { sleep } from './utils/sleep';
 
 const API_BASE_URL = 'https://api.spotify.com/v1';
 
+const LoadingSpinner = () => {
+  return (
+    <div className="loading-spinner-overlay">
+      <div className="loading-spinner"></div>
+    </div>
+  );
+};
+
 const CatalogSearch = () => {
   const navigate = useNavigate();
   const accessToken = localStorage.getItem('access_token');
@@ -14,13 +22,13 @@ const CatalogSearch = () => {
     return <div></div>
   }
 
+  const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [searchResults, setSearchResults] = useState<any[]>([])
   const allowedItemTypes = ["album","track","episode"]
   let debounceTimeout: NodeJS.Timeout;
 
   const checkAndUpdateSearchResult = async (item: any, type: string) => {
-    // TODO: refactor check into a helper
     let checkUrl = `${API_BASE_URL}/me/${type}/contains?`
     const payload: any = {
       headers: {
@@ -32,7 +40,7 @@ const CatalogSearch = () => {
     } as any)
     const response = await fetch(checkUrl + params, payload)
 
-    // TODO error handling, specifically response.status 401 - need to use refresh token
+    // TODO error handling, specifically response.status 401 - need to use refresh token when that happens
     const checkResult = await response.json()
     if(checkResult.length > 0 && checkResult[0] === true) {
       setSearchResults(searchResults => searchResults.concat([item]))
@@ -40,7 +48,7 @@ const CatalogSearch = () => {
   }
 
   // TODO make type for items
-  const processSearchResults = async (items: any) => {
+  const processSearchResults = async (items: any, setIsLoading: any) => {
     for(let itemType of allowedItemTypes) {
       const pluralItemType = itemType + "s"
       // TODO handle offset tracking here
@@ -48,6 +56,7 @@ const CatalogSearch = () => {
       await Promise.all(results.map(async (item: any) => 
         await checkAndUpdateSearchResult(item, pluralItemType),
         await sleep(750),
+        setIsLoading(false)
       ));
     }
   }
@@ -57,6 +66,7 @@ const CatalogSearch = () => {
       if (!query) {
         return;
       }
+      setIsLoading(true);
       setSearchResults([]);
       const payload: any = {
         headers: {
@@ -72,7 +82,7 @@ const CatalogSearch = () => {
       } as any)
       fetch(API_BASE_URL + "/search?" + params, payload).then(async (data) => {
         const searchResults = await data.json()
-        await processSearchResults(searchResults);
+        await processSearchResults(searchResults, setIsLoading);
       }).catch((e) => {
         console.error(e)
       })
@@ -103,7 +113,7 @@ const CatalogSearch = () => {
         <input type="text" placeholder="Search your saved items" onChange={(e) => setSearchQuery(e.target.value)}></input>
       </header>
       <div className="catalog-container">
-        {fancySearchResults}
+        {isLoading ? <LoadingSpinner /> : fancySearchResults}
       </div>
     </div>
   )

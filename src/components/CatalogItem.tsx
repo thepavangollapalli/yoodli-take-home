@@ -46,8 +46,8 @@ export const CatalogItem = (props: any) => {
     <div className="catalog-item">
       <img src={image?.url} />
       <p>{item.name}</p>
-      <p>{genres.length > 0 ? genres.join(", ") : 'No genres found'}</p>
       <p>{item.type}</p>
+      <p>{genres.length > 0 ? genres.join(", ") : 'No genres found'}</p>
     </div>
   )
 }

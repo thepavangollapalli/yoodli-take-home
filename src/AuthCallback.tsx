@@ -36,7 +36,6 @@ const AuthCallback = () => {
 
     const body = await fetch(tokenUrl, payload)
     const response = await body.json();
-    console.log(response)
     // TODO need error checking here
 
     localStorage.setItem('access_token', response.access_token);
@@ -45,8 +44,8 @@ const AuthCallback = () => {
 
   useEffect(() => {
     let controller: any;
-    // we need this to cancel duplicate API requests made when React is running in strict mode
-    // (only a problem in lower envs)
+    // we need AbortController to cancel duplicate API requests made when React is running in strict mode
+    // this is only a problem in lower envs, and only implemented here as duplicate requests break the auth flow
     if(!import.meta.env.PROD) {
       controller = new AbortController();
     }
