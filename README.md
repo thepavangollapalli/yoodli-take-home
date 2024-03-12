@@ -2,9 +2,6 @@
 
 # Getting started
 
-Prerequisites:
-- Environment variables
-
 To get up and running: clone this repository, run `npm install` and then `npm run start`. The app will be accessible from `http://localhost:5173`.
 
 # Design Notes and Reflections
@@ -69,6 +66,7 @@ Assuming we want to extract the lyrics ourselves given a full song or music vide
 I think that a lot of the above questions require a bit more discussion, experimentation, and research to properly answer. Rather than get bogged down in that at this point, let's talk through what a good UX for this should look like. I think we should optimize for two use cases:
 1. When starting the song/video and playing sequentially from the start, we see lyrics show up as we go
 2. If we skip to a specific section of the song/video, lyrics for that part start showing up
+
 In both cases, the wait should be as small as possible.
 
 These use cases lead me to think that the best approach is to split up our audio into chunks and feed them into our transcription logic (wherever it lives) chunk by chunk. This way, we can start seeing lyrics show up as quickly as possible when the song starts playing and if we skip ahead to a specific chunk of the song we can quickly fetch lyrics for that as well by sending that specific chunk to get transcribed. The tradeoff of this approach is that we aren't able to analyze the entire song in one go and will have to wait for all chunks to get transcribed, but I don't think the (possibly negligible) extra cost of waiting for all chunks will outweigh the benefits of having a snappy UI when playing and skipping through the song. Of course, this is all based on my assumption of what the highest priority use cases for our app are - I would rather discuss this more with my team and ideally some end users before going further into implementation.
